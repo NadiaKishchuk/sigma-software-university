@@ -1,231 +1,89 @@
 ﻿using System;
-using System.IO;
-using System.Text;
+using System.Collections.Generic;
 using System.Linq;
-namespace stringType
+using System.Text;
+using System.Threading.Tasks;
+
+namespace delegetes
 {
-    /// <summary>
-    /// change some symbol on another
-    /// </summary>
-    class stringChange
-    {
-        static public void changeString(ref string[] textTochange, char whatChange, char newSymbolStart, char newSymbolEnd)
-        {
+    delegate void GetMessage();
 
-            StringBuilder[] text = new StringBuilder[textTochange.Length];
-            for (int k = 0; k < textTochange.Length; ++k)
-            {
-                text[k] = new StringBuilder(textTochange[k]);
-            }
-            int posStart = 0, posEnd = textTochange[textTochange.Length - 1].Length - 1;
-            int j = textTochange.Length - 1, i = 0;
-            while (j >= 0 && i <= textTochange.Length && j >= i)
-            {
-                if ((j == 0 && posEnd < 0) || (i == textTochange.Length - 1 && posStart > textTochange[i].Length)) break;
-                while (i < textTochange.Length)
-                {
-                    if (posStart >= textTochange[i].Length && i < textTochange.Length)
-                    {
-                        ++i; posStart = 0;
-                    }
-                    else if (textTochange[i][posStart] == whatChange) break;
-                    ++posStart;
-                }
-                while (j >= 0)
-                {
-                    if (posEnd < 0 && j >= 0)
-                    {
-                        if (j == 0) break;
-                        --j;
-                        if (textTochange[j].Length != 0)
-                        {
-                            posEnd = textTochange[j].Length - 1;
-                        }
-                    }
-                    else if (textTochange[j][posEnd] == whatChange)
-                    {
-                        break;
-                    }
-                    posEnd--;
-
-                }
-                if (textTochange[i][posStart] == whatChange && ((posEnd > posStart && i == j) || i < j) && textTochange[j][posEnd] == whatChange)
-                {
-                    text[i][posStart] = newSymbolStart;
-                    text[j][posEnd] = newSymbolEnd;
-                }
-                ++posStart; --posEnd;
-            }
-            for (int k = 0; k < textTochange.Length; ++k)
-            {
-                textTochange[k] = text[k].ToString();
-
-            }
-
-        }
-    }
-
-    class Proection3D
-    {
-        int[,,] arr3D;
-        int n,//x-col
-            m,//y-rows
-            p;//z
-        public Proection3D(int[,,] arr3D, int x, int y, int z)
-        {
-            this.arr3D = arr3D;
-            n = x; m = y; p = z;
-        }
-        public int[,] getProectionXY()
-        {
-            int[,] proection = new int[m, n];
-            for (int i = 0; i < m; ++i)
-            {
-                for (int j = 0; j < n; ++j)
-                {
-                    for (int k = 0; k < p; ++k)
-                    {
-                        if (proection[i, j] != 0) { break; }
-                        if (arr3D[k, i, j] != 0)
-                        {
-                            proection[i, j] = arr3D[k, i, j];
-                        }
-                        else
-                        {
-                            proection[i, j] = 0;
-
-                        }
-                    }
-                }
-            }
-            return proection;
-        }
-        public int[,] getProectionYZ()
-        {
-            int[,] proection = new int[p, m];
-            for (int i = 0; i < p; i++)
-            {
-                for (int j = 0; j < m; ++j)
-                {
-                    for (int k = 0; k < n; ++k)
-                    {
-                        if (proection[i, j] != 0) break;
-
-                        proection[i, j] = arr3D[i, j, k];
-
-                    }
-                }
-            }
-            return proection;
-        }
-        public int[,] getProectionXZ()
-        {
-            int[,] proection = new int[p, n];
-            for (int i = 0; i < p; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    for (int k = 0; k < m; k++)
-                    {
-                        if (proection[i, j] != 0) break;
-                        proection[i, j] = arr3D[i, k, j];
-                    }
-                }
-            }
-            return proection;
-        }
-    }
-    class filePath{
-     
-       public  static string getFileName(string file_path)
-        {
-            string ret;
-            int slash=file_path.LastIndexOf('\\');
-            ret = file_path.Substring(slash+1);
-            int dot = ret.LastIndexOf('.');
-            ret = ret.Substring(0, dot);
-          
-            return ret;
-            
-        }
-       public static string getRoot(string filePath)
-        {
-            int slash = filePath.IndexOf('\\');
-            string ret = filePath.Substring(slash + 1);
-            slash = ret.IndexOf('\\');
-            ret = ret.Substring(0, slash);
-            return ret;
-        }
-    }
     class Program
     {
-        
-        
         static void Main(string[] args)
-        {
-            /*  Random r = new Random();
-              int[,,] a = new int[2, 3, 4];
-              for(int i = 0; i < 2; i++)
-              {
-                  for(int j = 0; j < 3; j++)
-                  {
-                      for(int k = 0; k < 4; k++)
-                      {
-                          a[i, j, k] = r.Next(0,2);
-                      }
-                  }
-              }
-              a[0, 0, 0] = 0;
-              a[0, 0, 1] = 0;
-              Proection3D proect = new Proection3D(a,4,3,2);
-              int[,] pr=proect.getProectionYZ();
-              for (int i = 0; i < 2; i++)
-              {
-                  for (int j = 0; j < 3; ++j)
-                  {
-                      Console.Write($"{pr[i, j],-4}");
-                  }
-                  Console.WriteLine();
+        {/*
+            Product[] arr = new Product[] { new Product("milk", 23.4, 1.0, new DateTime(2021, 10, 21), new TimeSpan(25,0,0,0)),
+                 new Product("bread", 20.4, 1.0, new DateTime(2021, 10, 20), new TimeSpan(7,0,0,0)),
+                 new Product("eggs", 37.8, 10.0, new DateTime(2021, 10, 8), new TimeSpan(40,0,0,0)),
+                 new Product("kit-kat", 17, 1.0, new DateTime(2021, 08, 12), new TimeSpan(365,0,0,0)),
+                 new Product("sunflower oil", 67.4, 1.0, new DateTime(2021, 09, 10), new TimeSpan(365,0,0,0))
 
-              }
-
-              Console.WriteLine("\n");
-              pr = proect.getProectionXY();
-              for (int i = 0; i < 2; i++)
-              {
-                  for (int j = 0; j < 3; ++j)
-                  {
-                      Console.Write($"{pr[i, j],-4}");
-                  }
-                  Console.WriteLine();
-
-              }
-              Console.WriteLine("\n");
-              pr = proect.getProectionXZ();
-              for (int i = 0; i < 2; i++)
-              {
-                  for (int j = 0; j < 3; ++j)
-                  {
-                      Console.Write($"{pr[i, j],-4}");
-                  }
-                  Console.WriteLine();
-
-              }*/
-            /* if (File.Exists(@"textStringBuilder.txt"))
-             {
-                 string[] text = File.ReadAllLines(@"textStringBuilder.txt");
-                 stringChange.changeString(ref text, '#', '<', '>');
-                 foreach(string a in text)
-                 {
-                     Console.WriteLine(a);
-                 }
-             }*/
-            string s = @"c: \ WebServers \ home \ testsite \ www \ myfile.txt";
-            Console.WriteLine(filePath.getRoot(s));
+            };
            
-        }
-        
-        
+         //   MyArray.sort<Product>(arr, (x,y)=>x.expireDays < y.expireDays);
+            foreach (Product a in arr)
+            {
+                Console.WriteLine(a);
+            }
+            Console.WriteLine("------------------------------------------------------------------------------------------------");
+           
+             MyArray.sort<Product>(arr, (x, y) => x>y);
+            
+            foreach (Product a in arr)
+            {
+                Console.WriteLine(a);
+            }
+            Storage storage1 = new Storage(5);
+            storage1.readFromFile(@"C:\Users\Надія\Desktop\Sigma c#\projects\home1\home1\bin\Debug\ProductsList.txt");
 
+            Storage storage2 = new Storage(3);
+            storage2.readFromFile(@"C:\Users\Надія\Desktop\Sigma c#\projects\home1\home1\bin\Debug\productList2.txt");
+            foreach (Product a in storage1)
+            {
+                Console.WriteLine(a);
+            }
+            Console.WriteLine("storage2------------------------------------------------------------------------------------------------");
+            foreach (Product a in storage2)
+            {
+                Console.WriteLine(a);
+            }
+            var listProd = MyArray.setAllEquals(storage1, storage2, (x, y)=>x.name==y.name);
+            Console.WriteLine("listProd (x, y)=>x==y)------------------------------------------------------------------------------------------------");
+            foreach (Product a in listProd)
+            {
+                Console.WriteLine(a);
+            }
+            listProd = MyArray.noConsist(storage1, storage2, (x, y) => x.name != y.name);
+            Console.WriteLine("listProd (x, y) => x != y------------------------------------------------------------------------------------------------");
+            foreach (Product a in listProd)
+            {
+                Console.WriteLine(a);
+            }
+            listProd = MyArray.getDifferent(storage1, storage2, (x, y) => x.name != y.name);
+            Console.WriteLine("listProd different------------------------------------------------------------------------------------------------");
+            foreach (Product a in listProd)
+            {
+                Console.WriteLine(a);
+            }*/
+            string[] sorted;
+            string maxCountBracketStr=String.Empty;
+            List<string> listStr=StringOperations.getMaxBrackets(new string[] { "fdfsd.dsfdjfsjk(dfsdf).fsfsdf.",
+                "sdfsdf(()ffdfsdfd).kdj(dlkfsj(","asdk(dfskldfksj(fsf(sfdfs))dk))ks)." },ref maxCountBracketStr);
+            sorted = listStr.ToArray();
+            MyArray.sort<string>(sorted, (x, y) => x.Length > y.Length);
+
+            Console.WriteLine(maxCountBracketStr);
+            foreach(string s in sorted)
+            {
+                Console.WriteLine(s);
+            }
+
+        }
+       static bool cmp(int x1,int x2)
+       {
+            return x1 < x2;
+       }
     }
+    
+
 }
